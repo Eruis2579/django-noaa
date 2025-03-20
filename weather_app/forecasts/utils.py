@@ -54,7 +54,7 @@ def fetch_weather_for_city(city):
         grid_x = data["properties"]["gridX"]
         grid_y = data["properties"]["gridY"]
 
-        forecast_url = f"{NOAA_BASE_URL}/gridpoints/{grid_id}/{grid_x},{grid_y}/forecast"
+        forecast_url = f"{NOAA_BASE_URL}/gridpoints/{grid_id}/{grid_x},{grid_y}/forecast/hourly"
         forecast_response = requests.get(forecast_url)
 
         if forecast_response.status_code == 200:
