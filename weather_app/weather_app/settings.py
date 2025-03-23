@@ -135,6 +135,6 @@ CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5178",
-    "http://127.0.0.1:5178",
+    "http://localhost:5177",
+    "http://127.0.0.1:5177",
 ]

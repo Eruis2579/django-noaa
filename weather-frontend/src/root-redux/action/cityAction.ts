@@ -6,13 +6,15 @@ const API_BASE_URL = "http://127.0.0.1:8000/api"; // Django API URL
 interface City {
     id: number;
     name: string;
+    latitude: number;
+    longitude: number;
 }
 interface Forecast {
     timestamp: string;
     temperature: number;
     humidity?: number;
     wind_speed: number;
-  }
+}
 
 // Function using Promise with proper TypeScript typing
 export const fetchCities = (): Promise<City[]> => {

@@ -1,0 +1,3 @@
+.popup :global(.leaflet-popup-content){
+    margin-bottom: 3px !important;
+}

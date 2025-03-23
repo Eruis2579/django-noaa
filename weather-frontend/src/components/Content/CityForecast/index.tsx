@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { fetchCityForecast } from "../../root-redux/action/cityAction";
+import { fetchCityForecast } from "../../../root-redux/action/cityAction";
 
 interface Forecast {
   timestamp: string;
