@@ -31,3 +31,10 @@ export const fetchCityForecast = (cityId: number): Promise<Forecast[]> => {
             .catch(error => reject(error));
     });
 };
+export const fetchTest = (): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        axios.get<string>(`${API_BASE_URL}/test`)
+            .then(response => resolve(response.data))
+            .catch(error => reject(error));
+    });
+};
