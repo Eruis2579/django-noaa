@@ -11,7 +11,7 @@ interface CitySelectorProps {
 
 interface City {
   id: number;
-  name: string;
+  cityName: string;
   latitude: number;
   longitude: number;
 }
@@ -22,14 +22,15 @@ export const Menus: React.FC<CitySelectorProps> = ({ selectedMenuKey }) => {
   useEffect(() => {
     fetchCities()
       .then(setMenuItems)
-      .catch(window.SM.error);
+      .catch(err=>{console.log(err);
+      });
   }, []);
 
   const items: MenuProps["items"] = menuItems.map((city) => ({
     key: city.id.toString(), 
     label: (
       <Link to={`/forecast/${city.id}`}>
-        <div className="text-blue-500 flex items-center gap-3"><Building2 size={12} strokeWidth={1.5} absoluteStrokeWidth />{city.name}</div>
+        <div className="text-blue-500 flex items-center gap-3"><Building2 size={12} strokeWidth={1.5} absoluteStrokeWidth />{city.cityName}</div>
       </Link>
     ),
   }));

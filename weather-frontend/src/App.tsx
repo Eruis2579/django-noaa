@@ -4,9 +4,9 @@ import CityDashBoard from "./components/Content/CityDashBoard";
 import { notification } from "antd";
 
 interface Message {
-  success: (msg:string)=>void,
-  error: (msg:string)=>void,
-  warning: (msg:string)=>void
+  success: (msg:string,title:string)=>void,
+  error: (msg:string,title:string)=>void,
+  warning: (msg:string,title:string)=>void
 }
 declare global {
   interface Window {
@@ -17,23 +17,26 @@ function App() {
   const [api, contextHolder] = notification.useNotification();
 
   window.SM = {
-    success: (msg: string) => api.success({
-      message: 'Notification Title',
+    success: (msg: string,title:string) => api.success({
+      message: `${title}`,
       description:`${msg}`,
       showProgress: true,
-      pauseOnHover:true,
+      pauseOnHover:false,
+      duration:1.5
     }),
-    error: (msg: string) => api.error({
-      message: 'Notification Title',
+    error: (msg: string,title:string) => api.error({
+      message: `${title}`,
       description:`${msg}`,
       showProgress: true,
-      pauseOnHover:true,
+      pauseOnHover:false,
+      duration:1.5
     }),
-    warning: (msg: string) => api.warning({
-      message: 'Notification Title',
+    warning: (msg: string,title:string) => api.warning({
+      message: `${title}`,
       description:`${msg}`,
       showProgress: true,
-      pauseOnHover:true,
+      pauseOnHover:false,
+      duration:1.5
     }),
   }
   return (
