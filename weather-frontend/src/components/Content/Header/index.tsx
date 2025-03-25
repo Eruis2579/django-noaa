@@ -19,7 +19,7 @@ const Header: React.FC<Props> = ({
             <Link to={'/'}>
               <div className='flex gap-3'>
                 <CloudSun className="text-blue-500" size={32} />
-                <h3 className="text-3xl font-bold text-gray-800">
+                <h3 className="text-3xl font-bold text-blue-500">
                   {title}
                 </h3>
               </div>

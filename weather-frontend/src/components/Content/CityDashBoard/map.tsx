@@ -1,16 +1,14 @@
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { useEffect, useState } from "react";
-import { fetchCities } from "../../../root-redux/action/cityAction";
+import { fetchCities, addCity } from "../../../root-redux/action/cityAction";
 import { Link, useNavigate } from "react-router-dom";
 import L from "leaflet";
 import css from './index.module.css'
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import { EyeIcon } from "lucide-react";
-import { FloatButton, Modal } from "antd";
+import { Button, Col, FloatButton, Form, Input, InputNumber, Modal, Row, Tooltip } from "antd";
 import { PlusOutlined } from '@ant-design/icons';
-import type { TooltipProps } from 'antd';
-import { Tooltip } from "antd";
 
 const customIcon = new L.Icon({
     iconUrl: markerIcon,
@@ -46,6 +44,12 @@ const CityMap = () => {
         map.setView(center, map.getZoom());
         return null;
     }
+
+    const onFinish = (values:any) =>{
+        addCity(values)
+            .then(res=>window.SM.success("The city has been added correctly.","ADD CITY"))
+            .catch(err=>window.SM.success("The city hasn't been added correctly. Try again","ADD CITY"))
+    }
     useEffect(() => {
         fetchCities()
             .then(res => {
@@ -58,7 +62,7 @@ const CityMap = () => {
     return (
         <>
             <Tooltip placement="top" title="ADD CITY"><FloatButton type="primary" icon={<PlusOutlined />} onClick={() => setOpenModal(true)} /></Tooltip>
-            <MapContainer center={[target.latitude, target.longitude]} zoom={9} style={{ height: "calc(100vh - 79px)", width: "100%" }}>
+            <MapContainer center={[target.latitude, target.longitude]} zoom={8} style={{ height: "calc(100vh - 79px)", width: "100%" }}>
                 <ChangeView center={[target.latitude, target.longitude]} />
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 {cities.map((city) => (
@@ -81,16 +85,48 @@ const CityMap = () => {
                 ))}
             </MapContainer>
             <Modal
-                title="Modal"
+                title="ADD CITY"
                 open={openModal}
-                onOk={()=>setOpenModal(false)}
+                footer={false}
+                onClose={() => setOpenModal(false)}
+                destroyOnClose
                 onCancel={()=>setOpenModal(false)}
-                okText="确认"
-                cancelText="取消"
             >
-                <p>Bla bla ...</p>
-                <p>Bla bla ...</p>
-                <p>Bla bla ...</p>
+                <Form
+                    onFinish={onFinish}
+                >
+                    <Form.Item
+                        name={"cityName"}
+                        label="cityName"
+                        rules={[{ required: true }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Row justify={"space-between"}>
+                        <Col span={11}>
+                            <Form.Item
+                                name={"latitude"}
+                                label="Latitude"
+                                rules={[{ required: true }]}
+                            >
+                                <InputNumber />
+                            </Form.Item>
+                        </Col>
+                        <Col span={11}>
+                            <Form.Item
+                                name={"longitude"}
+                                label="Longitude"
+                                rules={[{ required: true }]}
+                            >
+                                <InputNumber />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <div className="flex gap-3 justify-end">
+                        <Button style={{ width: "120px" }} htmlType="submit" type="primary">Ok</Button>
+                        <Button style={{ width: "120px" }} onClick={()=>setOpenModal(false)} >Cancel</Button>
+                    </div>
+                </Form>
             </Modal>
         </>
     );
