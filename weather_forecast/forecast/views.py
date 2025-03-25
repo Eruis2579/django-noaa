@@ -49,7 +49,14 @@ class WeatherDataView(View):
 
             # If no data found
             if not weather_data.exists():
-                return JsonResponse({'message': 'No data found for the given city and date'}, status=404)
+                weather_city_data = City.objects.filter(id=city_id).values(
+                'cityName',
+                'latitude',
+                'longitude'
+            )
+                response_data = list(weather_city_data)
+
+                return JsonResponse(response_data, safe=False)
 
             # Prepare the response data
             response_data = list(weather_data)

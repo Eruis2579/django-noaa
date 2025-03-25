@@ -9,9 +9,14 @@ import utc from 'dayjs/plugin/utc';
 
 dayjs.extend(utc);
 interface DataType {
-  cityName: string;
-  date: string;
-  temperature: number;
+  cityName:string;
+  id?:number;
+  temperature?:number;
+  date?:Date;
+  city__latitude?:number;
+  city__longitude?:number;
+  latitude?:number;
+  longitude?:number;
 }
 
 interface SelectOptionType {
@@ -41,6 +46,7 @@ const columns = [
 const App: React.FC = () => {
   const [forecastTime, setForecastTime] = useState<number | null>(1);
   const [forecast, setForecast] = useState<DataType[]>([]);
+  const [cityData, setCitydata] = useState<DataType[]>([]);
   const [tmpDate, setTmpDate] = useState<string>(dayjs().utc().format('YYYY-MM-DD'));
   const [initTime, setInitTime] = useState<string>();
   const [options, setOptions] = useState<SelectOptionType[]>([]);
@@ -83,12 +89,15 @@ const App: React.FC = () => {
     }else{
       const values = {
         cityId:cityId,
-        lonitude:longitude,
-        latitude:latitude,
+        longitude:`${forecast.length>0?forecast[0].city__longitude:cityData[0].longitude}`,
+        latitude:`${forecast.length>0?forecast[0].city__longitude:cityData[0].latitude}`,
         date:tmpDate,
         initTime:initTime,
         forecastTime:forecastTime
       }
+
+      console.log(values);
+      
       // fetchCityForecast(values)
     }
   }
@@ -119,14 +128,20 @@ const App: React.FC = () => {
     if (cityId) {
       fetchCityForecast(cityId, tmpDate)
         .then((data) => {
-          const formattedData = data.map((item: any) => ({
-            ...item,
-            date: dayjs(item.date).format('YYYY-MM-DD HH:mm'),
-            key: `${item.cityName}-${item.date}`,
-          }));
-          setForecast(formattedData);
+          if(data[0]?.id){
+            const formattedData = data.map((item: any) => ({
+              ...item,
+              date: dayjs(item.date).format('YYYY-MM-DD HH:mm'),
+              key: `${item.cityName}-${item.date}`,
+            }));
+            setForecast(formattedData);
+            window.SM.success("Weather Data has been loaded correctly","Weather Data")
+          }else{
+            setCitydata(data)
+            setForecast([])
+          }
         })
-        .catch(() => window.SM.error("Data doesn't exist", "Error"));
+        .catch(() => window.SM.error("Server failed", "Server Error"));
     }
   }, [cityId, tmpDate]);
 
@@ -134,7 +149,7 @@ const App: React.FC = () => {
     <MainLayout>
       <div className='p-4'>
         <div className='mx-auto flex justify-center mb-3'>
-          <span className='text-2xl text-blue-400'>Weather Forecast Data</span>
+          <span className='text-2xl text-blue-400'>{`${forecast.length>0?forecast[0].cityName:(cityData.length>0?cityData[0].cityName:"")}`}</span>
         </div>
         <div className='flex justify-end gap-7 mb-4 mr-[130px]'>
           <DatePicker defaultValue={dayjs()} onChange={onChange} format="YYYY-MM-DD" />

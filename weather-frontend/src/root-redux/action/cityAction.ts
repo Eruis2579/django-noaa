@@ -11,8 +11,13 @@ interface City {
 }
 interface DataType {
     cityName:string;
-    date:Date;
-    temperature:number;
+    id?:number;
+    temperature?:number;
+    date?:Date;
+    city__latitude?:number;
+    city__longitude?:number;
+    latitude?:number;
+    longitude?:number;
   }
 // Function using Promise with proper TypeScript typing
 export const fetchCities = (): Promise<City[]> => {
@@ -22,6 +27,15 @@ export const fetchCities = (): Promise<City[]> => {
             .catch(error => reject(error));
     });
 };
+export const addCity = (values:any): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        axios.post<string>(`${API_BASE_URL}/city_post/`,{...values})
+            .then(response => resolve("ok"))
+            .catch(error => reject(error));
+    });
+};
+
+
 export const fetchCityForecast = (cityId: string, tmpDate:string): Promise<DataType[]> => {
     return new Promise((resolve, reject) => {
         axios.get<DataType[]>(`${API_BASE_URL}/weather/`, {
@@ -34,10 +48,15 @@ export const fetchCityForecast = (cityId: string, tmpDate:string): Promise<DataT
             .catch(error => reject(error));
     });
 };
-export const addCity = (values:any): Promise<string> => {
+export const addCityForecast = (cityId: string, tmpDate:string): Promise<DataType[]> => {
     return new Promise((resolve, reject) => {
-        axios.post<string>(`${API_BASE_URL}/city_post/`,{...values})
-            .then(response => resolve("ok"))
+        axios.get<DataType[]>(`${API_BASE_URL}/weather/`, {
+            params:{
+                city:cityId,
+                date:tmpDate
+            }
+        })
+            .then(response => resolve(response.data))
             .catch(error => reject(error));
     });
 };
