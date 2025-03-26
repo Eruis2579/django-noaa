@@ -1,6 +1,7 @@
 from django.shortcuts import render
 # Create your views here.
 import json
+import time
 from django.http import JsonResponse
 from .models import Forecast, City
 from .utils import fetch_weather_data
@@ -29,10 +30,8 @@ class CityView(View):
 class WeatherDataView(View):
     def get(self, request, *args, **kwargs):
         # Get parameters from request
-        print("asdasd")
         city_id = int(request.GET.get('city'))  # The city ID passed as a parameter
         date_str = request.GET.get('date')  # The date passed as a parameter (e.g., "2025-03-24")
-        print(city_id, date_str)
         try:
             # Convert the date string to a datetime object
             date = datetime.strptime(date_str, "%Y-%m-%d").date()
@@ -69,14 +68,17 @@ class WeatherDataView(View):
 @csrf_exempt
 def post_weather_forecast(request):
     if request.method=='POST':
-        city = int(request.POST.get("city"))
-        cityName = request.POST.get("cityName")
-        latitude =float(request.POST.get("latitude"))
-        longitude =float(request.POST.get("longitude"))
-        date_str = request.POST.get("date")
-        forecast_tmp_time = request.POST.get("forecast_time")
-        file_time = request.POST.get("file_time")
+        data = json.loads(request.body)
+        print(data,"data")
+        city_id = int(data.get("cityId"))                      #2
+        cityName = data.get("cityName")                     #argen
+        latitude =float(data.get("latitude"))               #-23.43
+        longitude =float(data.get("longitude"))             #-45.23
+        date_str = data.get("date")                         #2025-03-23
+        forecast_tmp_time = data.get("forecastTime")        #124
+        file_time = data.get("initTime")                    #06
 
+        city = City.objects.get(id=city_id)
         during_time = int(forecast_tmp_time)
         try:
             date = datetime.strptime(date_str, "%Y-%m-%d")
@@ -113,7 +115,7 @@ def post_weather_forecast(request):
             x =f"{date.year}-{date.month}-{date.day} {file_time}:00:00"
             save_date = datetime.strptime(x, "%Y-%m-%d %H:%M:%S")
             # Store the fetched data in the database
-            forecast_datetime = save_date + timedelta(hours=i)
+            forecast_datetime = save_date + timedelta(hours=i)-timedelta(hours=3)
             Forecast.objects.update_or_create(
                 city=city,
                 date=forecast_datetime,

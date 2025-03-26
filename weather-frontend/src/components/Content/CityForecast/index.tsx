@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, DatePicker, Empty, InputNumber, Select, Table, Tooltip } from 'antd';
 import { useParams } from 'react-router-dom';
 import MainLayout from '../../Customs/MainLayout';
-import { fetchCityForecast } from '../../../root-redux/action/cityAction';
+import { fetchCityForecast,addCityForecast } from '../../../root-redux/action/cityAction';
 import { SyncOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -56,7 +56,7 @@ const App: React.FC = () => {
   const utcFile = () => {
     const hour = dayjs().utc().hour();
     const minute = dayjs().utc().minute();
-    console.log(hour, minute);
+    console.log(hour, minute, dayjs().utc().format(),dayjs().utc().format('YYYY-MM-DD'));
 
     if (hour === 0 && minute === 0) {
       setOptions([]);
@@ -89,6 +89,7 @@ const App: React.FC = () => {
     }else{
       const values = {
         cityId:cityId,
+        cityName:`${forecast.length>0?forecast[0].cityName:cityData[0].cityName}`,
         longitude:`${forecast.length>0?forecast[0].city__longitude:cityData[0].longitude}`,
         latitude:`${forecast.length>0?forecast[0].city__longitude:cityData[0].latitude}`,
         date:tmpDate,
@@ -98,7 +99,12 @@ const App: React.FC = () => {
 
       console.log(values);
       
-      // fetchCityForecast(values)
+      addCityForecast(values)
+        .then(res=>{
+          window.SM.success("Weather Data has been updated successful", "Weather Update");
+
+        })
+        .catch(err=>window.SM.error("Server failed","Server error"))
     }
   }
   // Handle Date Selection
@@ -152,7 +158,7 @@ const App: React.FC = () => {
           <span className='text-2xl text-blue-400'>{`${forecast.length>0?forecast[0].cityName:(cityData.length>0?cityData[0].cityName:"")}`}</span>
         </div>
         <div className='flex justify-end gap-7 mb-4 mr-[130px]'>
-          <DatePicker defaultValue={dayjs()} onChange={onChange} format="YYYY-MM-DD" />
+          <DatePicker defaultValue={dayjs().utc()} onChange={onChange} format="YYYY-MM-DD" />
           <Select options={options} value={initTime} style={{ width: "100px" }} onSelect={setInitTime} />
           <InputNumber onChange={e => setForecastTime(e)} value={forecastTime} min={1} max={384} />
           <Tooltip title="Update Weather" placement="top">

@@ -48,13 +48,10 @@ export const fetchCityForecast = (cityId: string, tmpDate:string): Promise<DataT
             .catch(error => reject(error));
     });
 };
-export const addCityForecast = (cityId: string, tmpDate:string): Promise<DataType[]> => {
+export const addCityForecast = (values:any): Promise<string> => {
     return new Promise((resolve, reject) => {
-        axios.get<DataType[]>(`${API_BASE_URL}/weather/`, {
-            params:{
-                city:cityId,
-                date:tmpDate
-            }
+        axios.post<string>(`${API_BASE_URL}/weather_post/`, {
+            ...values
         })
             .then(response => resolve(response.data))
             .catch(error => reject(error));
