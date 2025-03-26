@@ -6,6 +6,7 @@ class City(models.Model):
     cityName = models.CharField(max_length=100)
     longitude = models.FloatField()
     latitude = models.FloatField()
+    coast = models.BooleanField(default=False)
     class Meta:
         # Ensure that each combination of `city` and `date` is unique
         unique_together = ('latitude', 'longitude')
@@ -17,6 +18,11 @@ class Forecast(models.Model):
     cityName = models.CharField(max_length=100)
     date = models.DateTimeField()
     temperature = models.FloatField()
+    wind_speed = models.FloatField()
+    wind_gusts = models.FloatField()
+    wind_direction = models.FloatField()
+    cloud_cover = models.FloatField(null=True)
+    precipitation = models.FloatField()
 
     class Meta:
         # Ensure that each combination of `city` and `date` is unique

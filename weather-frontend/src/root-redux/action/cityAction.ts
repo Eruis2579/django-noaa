@@ -8,16 +8,24 @@ interface City {
     cityName: string;
     latitude: number;
     longitude: number;
+    coast:boolean;
 }
 interface DataType {
-    cityName:string;
-    id?:number;
-    temperature?:number;
-    date?:Date;
-    city__latitude?:number;
-    city__longitude?:number;
-    latitude?:number;
-    longitude?:number;
+    cityName: string;
+    id?: number;
+    temperature?: number;
+    coast?:boolean;
+    date?: Date;
+    city__latitude?: number;
+    city__longitude?: number;
+    city__coast?:boolean
+    latitude?: number;
+    longitude?: number;
+    wind_speed?:number;
+    wind_gusts?:number;
+    wind_direction?:number;
+    cloud_cover?:number;
+    precipitation?:number;
   }
 // Function using Promise with proper TypeScript typing
 export const fetchCities = (): Promise<City[]> => {

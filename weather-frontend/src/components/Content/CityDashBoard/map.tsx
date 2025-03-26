@@ -1,13 +1,13 @@
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { useEffect, useState } from "react";
 import { fetchCities, addCity } from "../../../root-redux/action/cityAction";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import L from "leaflet";
 import css from './index.module.css'
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import { EyeIcon } from "lucide-react";
-import { Button, Col, FloatButton, Form, Input, InputNumber, Modal, Row, Tooltip } from "antd";
+import { Button, Checkbox, Col, FloatButton, Form, Input, InputNumber, Modal, Row, Tooltip } from "antd";
 import { PlusOutlined } from '@ant-design/icons';
 
 const customIcon = new L.Icon({
@@ -23,6 +23,7 @@ interface City {
     cityName: string;
     latitude: number;
     longitude: number;
+    coast:boolean;
 }
 
 interface Target {
@@ -37,15 +38,14 @@ const CityMap = () => {
         latitude: -37.33333,
         longitude: -59.25
     })
-    const navigate = useNavigate();
-
     function ChangeView({ center }: { center: [number, number] }) {
         const map = useMap();
         map.setView(center, map.getZoom());
         return null;
     }
-
     const onFinish = (values:any) =>{
+        console.log(values);
+        
         addCity(values)
             .then(res=>window.SM.success("The city has been added correctly.","ADD CITY"))
             .catch(err=>window.SM.success("The city hasn't been added correctly. Try again","ADD CITY"))
@@ -85,6 +85,7 @@ const CityMap = () => {
                 ))}
             </MapContainer>
             <Modal
+                width={900}
                 title="ADD CITY"
                 open={openModal}
                 footer={false}
@@ -103,22 +104,31 @@ const CityMap = () => {
                         <Input />
                     </Form.Item>
                     <Row justify={"space-between"}>
-                        <Col span={11}>
+                        <Col span={9}>
                             <Form.Item
                                 name={"latitude"}
                                 label="Latitude"
                                 rules={[{ required: true }]}
                             >
-                                <InputNumber />
+                                <InputNumber style={{width:"100%"}} />
                             </Form.Item>
                         </Col>
-                        <Col span={11}>
+                        <Col span={9}>
                             <Form.Item
                                 name={"longitude"}
                                 label="Longitude"
                                 rules={[{ required: true }]}
                             >
-                                <InputNumber />
+                                <InputNumber style={{width:"100%"}} />
+                            </Form.Item>
+                        </Col>
+                        <Col span={5}>
+                            <Form.Item
+                                label="Ciudades costeras"
+                                valuePropName="checked"
+                                name={"coast"}
+                            >
+                                <Checkbox  />
                             </Form.Item>
                         </Col>
                     </Row>

@@ -14,6 +14,7 @@ interface City {
   cityName: string;
   latitude: number;
   longitude: number;
+  coast:boolean;
 }
 
 export const Menus: React.FC<CitySelectorProps> = ({ selectedMenuKey }) => {
