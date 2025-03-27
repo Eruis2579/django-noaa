@@ -44,11 +44,25 @@ class WeatherDataView(View):
                 "wind_direction",
                 "cloud_cover",
                 "precipitation",
+                "wave_height",
+                "wave_period",
+                "wave_direction",
+                "swell_height",
+                "swell_period",
+                "swell_direction",
+                "swell2_height",
+                "swell2_period",
+                "swell2_direction",
+                "wind_wave_height",
+                "wind_wave_period",
+                "wind_wave_direction",
+                "wind_speed2",
+                "wind_direction2",
                 'date',
                 'cityName',
                 'city__latitude',
                 'city__longitude',
-                'city__coast'
+                'city__coast',
             ).order_by('date')
             # If no data found
             if not weather_data.exists():
@@ -82,6 +96,7 @@ def post_weather_forecast(request):
         date_str = data.get("date")                         #2025-03-23
         forecast_tmp_time = data.get("forecastTime")        #124
         file_time = data.get("initTime")                    #06
+        coast = data.get("coast")
 
         city = City.objects.get(id=city_id)
         during_time = int(forecast_tmp_time)
@@ -100,18 +115,20 @@ def post_weather_forecast(request):
                 forecast_time=f"{i}"
 
             # Fetch data from NOAA GFS 13km
-            weather_data = fetch_weather_data(latitude, longitude, forecast_time, dir_date, file_time)
-            
-            x =f"{date.year}-{date.month}-{date.day} {file_time}:00:00"
-            save_date = datetime.strptime(x, "%Y-%m-%d %H:%M:%S")
-            # Store the fetched data in the database
-            forecast_datetime = save_date + timedelta(hours=i)
-            Forecast.objects.update_or_create(
-                city=city,
-                date=forecast_datetime,
-                defaults={**weather_data,"cityName":cityName}
-            )
-            time.sleep(5)
+            weather_data = fetch_weather_data(latitude, longitude, forecast_time, dir_date, file_time,coast)
+            if weather_data is not None:
+                x =f"{date.year}-{date.month}-{date.day} {file_time}:00:00"
+                save_date = datetime.strptime(x, "%Y-%m-%d %H:%M:%S")
+                # Store the fetched data in the database
+                forecast_datetime = save_date + timedelta(hours=i)
+                Forecast.objects.update_or_create(
+                    city=city,
+                    date=forecast_datetime,
+                    defaults={**weather_data,"cityName":cityName}
+                )
+                time.sleep(3)
+            else:
+                return JsonResponse("No data.",safe=False,status=400)
         return JsonResponse("The data has been updated correctly.",safe=False)
 @csrf_exempt
 def post_city_forecast(request):
@@ -132,3 +149,24 @@ def post_city_forecast(request):
             )
             
         return JsonResponse("The control ran correctly..",safe=False)
+@csrf_exempt
+def delete_city_forecast(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            city_id = data.get("cityId")
+
+            if city_id is None:
+                return JsonResponse({"error": "cityId is required"}, status=400)
+
+            deleted_count, _ = City.objects.filter(id=city_id).delete()
+
+            if deleted_count == 0:
+                return JsonResponse({"error": "City not found"}, status=404)
+
+            return JsonResponse({"message": "City deleted successfully"}, status=200)
+
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON"}, status=400)
+    
+    return JsonResponse({"error": "Invalid request method"}, status=405)

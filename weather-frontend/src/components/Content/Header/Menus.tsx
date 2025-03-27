@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { AlignJustify, Building2 } from "lucide-react";
 import type { MenuProps } from "antd";
-import { Dropdown, Menu } from "antd";
+import { Dropdown } from "antd";
 import { fetchCities } from "../../../root-redux/action/cityAction";
 import { Link } from "react-router";
 
@@ -17,7 +17,7 @@ interface City {
   coast:boolean;
 }
 
-export const Menus: React.FC<CitySelectorProps> = ({ selectedMenuKey }) => {
+export const Menus: React.FC<CitySelectorProps> = () => {
   const [menuItems, setMenuItems] = useState<City[]>([]);
 
   useEffect(() => {
@@ -31,7 +31,7 @@ export const Menus: React.FC<CitySelectorProps> = ({ selectedMenuKey }) => {
     key: city.id.toString(), 
     label: (
       <Link to={`/forecast/${city.id}`}>
-        <div className="text-blue-500 flex items-center gap-3"><Building2 size={12} strokeWidth={1.5} absoluteStrokeWidth />{city.cityName}</div>
+        <div className={`${city.coast?"text-blue-500":"text-brown-500"} flex items-center gap-3`}><Building2 size={12} strokeWidth={1.5} absoluteStrokeWidth />{city.cityName}</div>
       </Link>
     ),
   }));

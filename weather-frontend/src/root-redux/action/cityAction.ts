@@ -35,10 +35,20 @@ export const fetchCities = (): Promise<City[]> => {
             .catch(error => reject(error));
     });
 };
+export const deleteCity = (values:any): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        axios.post<string>(`${API_BASE_URL}/deleteCity/`,{cityId:values})
+            .then(response => resolve(response.data))
+            .catch(error => reject(error));
+    });
+};
 export const addCity = (values:any): Promise<string> => {
     return new Promise((resolve, reject) => {
-        axios.post<string>(`${API_BASE_URL}/city_post/`,{...values})
-            .then(response => resolve("ok"))
+        axios.post<string>(`${API_BASE_URL}/city_post/`,{
+            ...values,
+            coast:values.coast?values.coast:false
+        })
+            .then(() => resolve("ok"))
             .catch(error => reject(error));
     });
 };

@@ -23,6 +23,20 @@ class Forecast(models.Model):
     wind_direction = models.FloatField()
     cloud_cover = models.FloatField(null=True)
     precipitation = models.FloatField()
+    wave_height = models.FloatField(null=True)
+    wave_period = models.FloatField(null=True)
+    wave_direction = models.FloatField(null=True)
+    swell_height = models.FloatField(null=True)
+    swell_period = models.FloatField(null=True)
+    swell_direction = models.FloatField(null=True)
+    swell2_height = models.FloatField(null=True)
+    swell2_period = models.FloatField(null=True)
+    swell2_direction = models.FloatField(null=True)
+    wind_wave_height = models.FloatField(null=True)
+    wind_wave_period = models.FloatField(null=True)
+    wind_wave_direction = models.FloatField(null=True)
+    wind_speed2= models.FloatField(null=True)
+    wind_direction2= models.FloatField(null=True)
 
     class Meta:
         # Ensure that each combination of `city` and `date` is unique

@@ -19,7 +19,7 @@ interface Props {
   headerProps?: HeaderProps;
 }
 
-const App: React.FC<Props> = ({ showHeader = true, showFooter = true, children, headerProps,breadcrumbItems=[] }) => {
+const App: React.FC<Props> = ({ showHeader = true, children, headerProps,breadcrumbItems=[] }) => {
   return (
     <>
       {showHeader && <Header {...headerProps} />}
